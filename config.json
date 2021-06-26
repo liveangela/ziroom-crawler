@@ -1,0 +1,9 @@
+{
+  "url": "https://sh.ziroom.com/map/room/list",
+  "min_lng": 121.317945,
+  "max_lng": 121.69509,
+  "min_lat": 31.232875,
+  "max_lat": 31.311888,
+  "price": [1900, 3000],
+  "face": [2, 3]
+}
