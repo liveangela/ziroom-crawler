@@ -42,3 +42,9 @@ export interface Room {
   sale_class: string; // "release"
   sale_status: number; // 0
 }
+
+export interface DealOption {
+  urlWithParams: string;
+  page: number;
+  results: Room[];
+}

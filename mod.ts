@@ -1,4 +1,4 @@
-import { Config, Room, ResponseStruct, ResponseData } from './type.d.ts';
+import { Config, DealOption, ResponseStruct, ResponseData } from './type.d.ts';
 
 export function randInt(a: number, b: number): number {
   const c = b - a + 1;
@@ -31,28 +31,24 @@ export async function query(urlWithParams: string, p: number): Promise<ResponseD
   return data;
 }
 
-export function deal(url: string, paramsJson: string, roomsGlobal: Room[], p: number) {
+export function deal(option: DealOption, cb: () => void) {
+  const { urlWithParams, page, results } = option;
+  const timespan = randInt(6000, 30000);
+  console.log(`准备请求第${page}页数据，等待${timespan}ms...`);
   setTimeout(async () => {
-    const res: Response = await fetch(url, {
-      method: 'GET',
-
-      body: paramsJson,
-    });
-    const resStruct: ResponseStruct = await res.json();
-    const { code, data, message } = resStruct;
-    if (code !== 200) {
-      console.error(message);
-      return; // TODO: 改为重试
+    const data: ResponseData | null = await query(urlWithParams, page);
+    if (data) {
+      const { pages, rooms } = data;
+      results.push(...rooms);
+      option.page += 1;
+      if (page > pages) {
+        cb();
+      } else {
+        deal(option, cb);
+      }
+    } else {
+      console.log(`第${page}页数据请求失败，重试`);
+      deal(option, cb);
     }
-    const { pages, rooms } = data;
-    roomsGlobal.push(...rooms);
-
-    // p += 1;
-    // if (p < pages) {
-    //   deal(url, paramsJson, roomsGlobal, p);
-    // } else {
-    //   console.log('all query done, saving files...');
-    // }
-    console.warn(roomsGlobal);
-  }, randInt(6000, 30000));
+  }, timespan);
 }

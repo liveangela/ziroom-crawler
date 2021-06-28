@@ -8,25 +8,16 @@
  * 6. 没超过，则继续重复第4步；超过，则写入文件
  * 7. 每次收到返回和再次发送的期间，可以进行大量逻辑处理
  */
-import { Config, ResponseData, Room } from './type.d.ts';
-import { query, getUrlWithParams } from './mod.ts';
+import { Config, Room } from './type.d.ts';
+import { deal, getUrlWithParams } from './mod.ts';
 
+const path = './data.json';
 const json = await Deno.readTextFile('./config.json');
 const config: Config = JSON.parse(json);
 const urlWithParams = getUrlWithParams(config);
+const results: Room[] = [];
 
-const data: ResponseData | null = await query(urlWithParams, 1);
-if (data) {
-  const { pages, rooms } = data;
-  console.warn(pages);
-  console.warn(rooms);
-} else {
-  // 重试
-}
-
-
-// const roomsGlobal: Room[] = [];
-// let pGlobal = 1;
-
-// deal(url, paramsJson, roomsGlobal, pGlobal);
-
+deal({urlWithParams, page: 1, results}, async () => {
+  await Deno.writeTextFile(path, JSON.stringify(results, null, 2));
+  console.warn(`所有请求结束, 共计${results.length}项, 请查看“${path}”文件`);
+});
