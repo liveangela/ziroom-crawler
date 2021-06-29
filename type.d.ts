@@ -66,10 +66,8 @@ export interface Room {
   score?: number;
 }
 
-export interface DealOption {
+export interface DealOption extends Config {
   urlWithParams: string;
   page: number;
   results: Room[];
-  targetConfig: TargetConfig;
-  targetValue: TargetValue;
 }

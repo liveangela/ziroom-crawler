@@ -1,4 +1,4 @@
-import { Room, TargetValue, SearchConfig, DealOption, ResponseStruct, ResponseData } from './type.d.ts';
+import { Config, Room, TargetValue, SearchConfig, DealOption, ResponseStruct, ResponseData } from './type.d.ts';
 
 export function randInt(a: number, b: number): number {
   const c = b - a + 1;
@@ -54,7 +54,7 @@ export function calcTarget(room: Room): TargetValue {
   };
 }
 
-export function calcScore(room: Room, option: DealOption) {
+export function calcScore(room: Room, option: Config) {
   const target = calcTarget(room);
   const { targetConfig, targetValue } = option;
   let sum = 0;
@@ -84,7 +84,7 @@ export function calcScore(room: Room, option: DealOption) {
   Object.assign(room, { target, score: sum });
 }
 
-export function deal(option: DealOption, cb: () => void) {
+export function deal(option: DealOption, cb: (done: boolean) => void) {
   const { urlWithParams, page, results } = option;
   const timespan = randInt(6000, 30000);
   console.log(`准备请求第${page}页数据，等待${timespan}ms...`);
@@ -96,9 +96,10 @@ export function deal(option: DealOption, cb: () => void) {
       results.push(...rooms);
       option.page += 1;
       if (page > pages) {
-        cb();
+        cb(true);
       } else {
         deal(option, cb);
+        cb(false); // 每次也存储
       }
     } else {
       console.log(`第${page}页数据请求失败，重试`);

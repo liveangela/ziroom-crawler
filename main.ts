@@ -14,7 +14,8 @@
 import { Config, Room } from './type.d.ts';
 import { deal, getUrlWithParams } from './mod.ts';
 
-const path = './data.json';
+const timeStr = new Date().toLocaleString('lt');
+const path = `./data_${timeStr}.json`;
 const json = await Deno.readTextFile('./config.json');
 const config: Config = JSON.parse(json);
 const urlWithParams = getUrlWithParams(config.search);
@@ -24,10 +25,10 @@ deal({
   urlWithParams,
   page: 1,
   results,
-  targetConfig: config.targetConfig,
-  targetValue: config.targetValue,
-}, async () => {
+  ...config,
+}, async (done = true) => {
+  const prefix = done ? '所有请求结束' : '存储数据';
   const sorted = results.sort((a, b) => (a.score || 1) - (b.score || 1));
   await Deno.writeTextFile(path, JSON.stringify(sorted, null, 2));
-  console.warn(`所有请求结束, 共计${results.length}项, 请查看“${path}”文件`);
+  console.warn(`${prefix}, 共计${results.length}项, 请查看“${path}”文件`);
 });
