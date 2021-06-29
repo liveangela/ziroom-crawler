@@ -40,7 +40,7 @@ export function calcTarget(room: Room): TargetValue {
   const isBottomFloor = currentFloor < 2;
   const needElevator = maxFloor > 7;
   const distanceFromStation = location
-    .map(e => parseInt(e.name.match(/\d+/)![0], 10))
+    .map(e => e ? parseInt((e.name.match(/\d+/) || ['5000'])[0], 10) : 5000)
     .reduce((a, b) => a > b ? b : a, Infinity);
   return {
     price,

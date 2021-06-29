@@ -6,6 +6,12 @@ export enum HouseFace {
   SouthNorth = 10,
 }
 
+// 断点续传的配置
+export interface SourceConfig {
+  page: number; // 起始页
+  path: string; // 已有数据的文件路径
+}
+
 export interface SearchConfig {
   min_lng: number;
   max_lng: number;
@@ -31,6 +37,7 @@ export interface TargetValue {
 }
 
 export interface Config {
+  source: SourceConfig;
   search: SearchConfig;
   targetConfig: TargetConfig;
   targetValue: TargetValue;

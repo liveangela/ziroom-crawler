@@ -1,4 +1,8 @@
 {
+  "source": {
+    "page": 1,
+    "path": ""
+  },
   "search": {
     "min_lng": 121.317945,
     "max_lng": 121.69509,
@@ -8,9 +12,9 @@
     "face": [2, 3]
   },
   "targetValue": {
-    "price": 0,
+    "price": 2200,
     "floor": 0.75,
-    "area": 60,
+    "area": 15,
     "isBottomFloor": false,
     "isTopFloor": false,
     "needElevator": true,
@@ -25,7 +29,7 @@
       "factor": 0.2
     },
     "area": {
-      "factor": 0.5,
+      "factor": 2,
       "divider": 100
     },
     "distanceFromStation": {

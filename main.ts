@@ -19,11 +19,18 @@ const path = `./data_${timeStr}.json`;
 const json = await Deno.readTextFile('./config.json');
 const config: Config = JSON.parse(json);
 const urlWithParams = getUrlWithParams(config.search);
+const isContinueTransfer = !!config.source.path;
+const page = isContinueTransfer ? config.source.page : 1;
 const results: Room[] = [];
+
+if (isContinueTransfer) {
+  const sourceJson = await Deno.readTextFile(config.source.path);
+  results.push(...JSON.parse(sourceJson));
+}
 
 deal({
   urlWithParams,
-  page: 1,
+  page,
   results,
   ...config,
 }, async (done = true) => {
