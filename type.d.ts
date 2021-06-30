@@ -33,7 +33,7 @@ export interface TargetConfig {
 
 // 目标值，或者当前值
 export interface TargetValue {
-  [name: string]: number | number[] | boolean;
+  [name: string]: number | number[] | boolean | null;
 }
 
 export interface Config {
@@ -77,4 +77,43 @@ export interface DealOption extends Config {
   urlWithParams: string;
   page: number;
   results: Room[];
+  location: Location;
+}
+
+export interface MapApiLocationResponse {
+  status: number;
+  result: MapApiLocation
+}
+
+export interface MapApiLocation {
+  location: {[name: string]: number}; // lng and lat
+  precise: number;
+  confidence: number;
+  level: string;
+}
+
+export interface Location {
+  [name: string]: { // 小区名称为key
+    location: number[] | null; // 经纬度
+    to: { // 去哪里
+      [name: string]: Transit | null;
+    };
+  }
+}
+
+export interface MapApiTransitResponse {
+  status: number;
+  result: {
+    taxi: MapApiTransitBase;
+    routes: MapApiTransitBase[];
+  };
+}
+
+export interface MapApiTransitBase {
+  distance: number;
+  duration: number;
+}
+
+export interface Transit {
+  [name: string]: MapApiTransitBase;
 }

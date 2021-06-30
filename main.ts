@@ -11,13 +11,15 @@
  * 执行
  * deno run --allow-read --allow-write --allow-net main.ts
  */
-import { Config, Room } from './type.d.ts';
+import { Config, Room, Location } from './type.d.ts';
 import { deal, getUrlWithParams } from './mod.ts';
 
 const timeStr = new Date().toLocaleString('lt');
 const path = `./data_${timeStr}.json`;
 const json = await Deno.readTextFile('./config.json');
 const config: Config = JSON.parse(json);
+const locationJson = await Deno.readTextFile('./location.json');
+const location: Location = JSON.parse(locationJson);
 const urlWithParams = getUrlWithParams(config.search);
 const isContinueTransfer = !!config.source.path;
 const page = isContinueTransfer ? config.source.page : 1;
@@ -32,10 +34,12 @@ deal({
   urlWithParams,
   page,
   results,
+  location,
   ...config,
 }, async (done = true) => {
   const prefix = done ? '所有请求结束' : '存储数据';
   const sorted = results.sort((a, b) => (a.score || 1) - (b.score || 1));
   await Deno.writeTextFile(path, JSON.stringify(sorted, null, 2));
   console.warn(`${prefix}, 共计${results.length}项, 请查看“${path}”文件`);
+  await Deno.writeTextFile('./location.json', JSON.stringify(location, null, 2));
 });

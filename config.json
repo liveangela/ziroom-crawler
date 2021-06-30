@@ -19,7 +19,7 @@
     "isTopFloor": false,
     "needElevator": true,
     "distanceFromStation": 0,
-    "position": [121.437714, 31.226557]
+    "location": [121.43807, 31.224154]
   },
   "targetConfig": {
     "price": {
@@ -35,8 +35,8 @@
     "distanceFromStation": {
       "divider": 5000
     },
-    "position": {
-      "divider": 0.1
+    "location": {
+      "divider": 100000
     }
   }
 }
