@@ -20,9 +20,12 @@ const results: Room[] = [];
 for (let i = 0, len = data.length; i < len; i++) {
   const room = await calcScore(data[i], config, location);
   results.push(room);
-  await Deno.writeTextFile('./location.json', JSON.stringify(location, null, 2));
+  if (i % 20 < 1) {
+    await Deno.writeTextFile('./location.json', JSON.stringify(location, null, 2));
+  }
 }
 results.sort((a, b) => (a.score || 1) - (b.score || 1));
 const newPath = `${path.substr(0, path.length - 5)}_refresh.json`;
 await Deno.writeTextFile(newPath, JSON.stringify(results, null, 2));
 console.warn(`重算结束, 共计${results.length}项, 请查看“${path}”文件`);
+await Deno.writeTextFile('./location.json', JSON.stringify(location, null, 2));
