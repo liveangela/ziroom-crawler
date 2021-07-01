@@ -12,7 +12,7 @@ import {
   MapApiTransitResponse,
 } from './type.d.ts';
 
-export function sleep(timespan = 1000): Promise<void> {
+export function sleep(timespan = 100): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, timespan));
 }
 
@@ -106,7 +106,7 @@ export async function calcTarget(room: Room, locationMap: Location): Promise<Tar
   const isBottomFloor = currentFloor < 2;
   const needElevator = maxFloor > 7;
   const distanceFromStation = loc
-    .map(e => e ? parseInt((e.name.match(/\d+/) || ['5000'])[0], 10) : 5000)
+    .map(e => e ? parseInt((e.name.match(/\d+米$/g) || ['5000'])[0], 10) : 5000)
     .reduce((a, b) => a > b ? b : a, Infinity);
   const locationObj = locationMap[resblock_name];
   let location = locationObj && locationObj.location;
@@ -161,7 +161,6 @@ export async function calcScore(room: Room, config: Config, locationMap: Locatio
           if (!transit) {
             await sleep();
             transit = await getTransit(currentValue as number[], value);
-            console.debug('transit:', transit);
             Object.assign(locationToObj, {
               [toName]: transit,
             });
