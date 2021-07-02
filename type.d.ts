@@ -61,13 +61,13 @@ export interface Room {
   id: string;
   location: {name: string}[]; // [{name: "小区距南翔站步行约917米"}]
   name: string;
-  photo: string; // url
+  photo?: string; // url
   price: number;
-  price_unit: string; // "/月"
-  resblock_id: string; // 小区ID
+  price_unit?: string; // "/月"
+  resblock_id?: string; // 小区ID
   resblock_name: string; // 小区名称
   sale_class: string; // "release" | "sign" | "turn"
-  sale_status: number; // 0
+  sale_status?: number; // 0
   sign_date: string; // "预计2021-07-06可入住"，么有为0
   target?: TargetValue;
   score?: number;

@@ -134,7 +134,10 @@ export async function calcTarget(room: Room, locationMap: Location): Promise<Tar
 
 export async function calcScore(room: Room, config: Config, locationMap: Location): Promise<Room> {
   const { targetConfig, targetValue } = config;
-  const { resblock_name } = room;
+  const {
+    desc, detail_url, id, location, name,
+    price, resblock_name, sale_class, sign_date,
+  } = room;
   const target = await calcTarget(room, locationMap);
   const targetValueKeys = Object.keys(targetValue);
   let sum = 0;
@@ -175,7 +178,10 @@ export async function calcScore(room: Room, config: Config, locationMap: Locatio
     sum += score;
   }
 
-  return { ...room, target, score: sum };
+  return {
+    id, name, desc, price, location, resblock_name, detail_url,
+    sale_class, sign_date, target, score: sum
+  };
 }
 
 export function deal(option: DealOption, cb: (done: boolean) => void) {
