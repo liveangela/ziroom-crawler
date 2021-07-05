@@ -6,6 +6,12 @@ export enum HouseFace {
   SouthNorth = 10,
 }
 
+// 百度配置
+export interface BaiduApi {
+  ak: string;
+  baseUrl: string;
+}
+
 // 断点续传的配置
 export interface SourceConfig {
   page: number; // 起始页
@@ -37,6 +43,7 @@ export interface TargetValue {
 }
 
 export interface Config {
+  baiduApi: BaiduApi;
   source: SourceConfig;
   search: SearchConfig;
   targetConfig: TargetConfig;

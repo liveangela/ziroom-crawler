@@ -1,4 +1,8 @@
 {
+  "baiduApi": {
+    "ak": "",
+    "baseUrl": "https://api.map.baidu.com"
+  },
   "source": {
     "page": 1,
     "path": ""

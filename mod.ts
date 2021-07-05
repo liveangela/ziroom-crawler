@@ -4,6 +4,7 @@ import {
   Transit,
   TargetValue,
   Location,
+  BaiduApi,
   SearchConfig,
   DealOption,
   ResponseStruct,
@@ -44,9 +45,11 @@ export async function query(urlWithParams: string, p: number): Promise<ResponseD
 }
 
 // 通过百度接口获取经纬度
-export async function getLocation(address: string): Promise<number[] | null> {
+export async function getLocation(
+  address: string, baiduApi: BaiduApi
+): Promise<number[] | null> {
   if (!address) return null;
-  const ak = '';
+  const { ak, baseUrl } = baiduApi;
   const params = {
     ak,
     address,
@@ -54,7 +57,7 @@ export async function getLocation(address: string): Promise<number[] | null> {
     city: '上海市',
   };
   const paramsStr = Object.entries(params).map(e => `${e[0]}=${e[1]}`).join('&');
-  const url = `http://api.map.baidu.com/geocoding/v3/?${paramsStr}`;
+  const url = `${baseUrl}/geocoding/v3/?${paramsStr}`;
   const res: Response = await fetch(url);
   const resStruct: MapApiLocationResponse = await res.json();
   if (resStruct.status === 0) {
@@ -64,15 +67,17 @@ export async function getLocation(address: string): Promise<number[] | null> {
   return null;
 }
 
-export async function getTransit(from: number[], to: number[]): Promise<Transit | null> {
+export async function getTransit(
+  from: number[], to: number[], baiduApi: BaiduApi
+): Promise<Transit | null> {
   if (!from || !to) return null;
-  const ak = '';
+  const { ak, baseUrl } = baiduApi;
   const origin = `${from[1]},${from[0]}`;
   const destination = `${to[1]},${to[0]}`;
   const tactics_incity = 4; // 按耗时由小到大排序
   const params = { origin, destination, ak, tactics_incity };
   const paramsStr = Object.entries(params).map(e => `${e[0]}=${e[1]}`).join('&');
-  const url = `https://api.map.baidu.com/direction/v2/transit?${paramsStr}`;
+  const url = `${baseUrl}/direction/v2/transit?${paramsStr}`;
   const res: Response = await fetch(url);
   const resStruct: MapApiTransitResponse = await res.json();
   if (resStruct.status === 0) {
@@ -94,7 +99,9 @@ export async function getTransit(from: number[], to: number[]): Promise<Transit 
 }
 
 // 原始数据处理成需要计算的值
-export async function calcTarget(room: Room, locationMap: Location): Promise<TargetValue> {
+export async function calcTarget(
+  room: Room, locationMap: Location, baiduApi: BaiduApi
+): Promise<TargetValue> {
   const { desc, price, location: loc, resblock_name } = room;
   const [areaStr, floorStr] = desc.split(' | ');
   const area = parseFloat(areaStr);
@@ -112,7 +119,7 @@ export async function calcTarget(room: Room, locationMap: Location): Promise<Tar
   let location = locationObj && locationObj.location;
   if (!location) {
     await sleep();
-    location = await getLocation(resblock_name);
+    location = await getLocation(resblock_name, baiduApi);
     console.debug('拉取到了新的地址 ' + resblock_name + ': ', location);
     Object.assign(locationMap, {
       [resblock_name]: {
@@ -134,12 +141,12 @@ export async function calcTarget(room: Room, locationMap: Location): Promise<Tar
 }
 
 export async function calcScore(room: Room, config: Config, locationMap: Location): Promise<Room> {
-  const { targetConfig, targetValue } = config;
+  const { baiduApi, targetConfig, targetValue } = config;
   const {
     desc, detail_url, id, location, name,
     price, resblock_name, sale_class, sign_date,
   } = room;
-  const target = await calcTarget(room, locationMap);
+  const target = await calcTarget(room, locationMap, baiduApi);
   const targetValueKeys = Object.keys(targetValue);
   let sum = 0;
 
@@ -164,7 +171,7 @@ export async function calcScore(room: Room, config: Config, locationMap: Locatio
           let transit = locationToObj[toName];
           if (!transit) {
             await sleep();
-            transit = await getTransit(currentValue as number[], value);
+            transit = await getTransit(currentValue as number[], value, baiduApi);
             console.debug('获得了新的路线 ' + resblock_name + ': ', transit);
             Object.assign(locationToObj, {
               [toName]: transit,

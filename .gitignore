@@ -1,5 +1,6 @@
 # system
 .DS_Store
 
-# data
+# static
 data*.json
+config.*.json
