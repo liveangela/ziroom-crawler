@@ -26,16 +26,18 @@
       "divider": 10000
     },
     "floor": {
-      "factor": 0.2
+      "factor": 0.1
     },
     "area": {
       "factor": 2,
       "divider": 100
     },
     "distanceFromStation": {
+      "factor": 0.1,
       "divider": 5000
     },
     "location": {
+      "factor": 2,
       "divider": 100000
     }
   }
