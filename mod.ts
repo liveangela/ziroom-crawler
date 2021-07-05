@@ -113,6 +113,7 @@ export async function calcTarget(room: Room, locationMap: Location): Promise<Tar
   if (!location) {
     await sleep();
     location = await getLocation(resblock_name);
+    console.debug('拉取到了新的地址 ' + resblock_name + ': ', location);
     Object.assign(locationMap, {
       [resblock_name]: {
         location,
@@ -164,6 +165,7 @@ export async function calcScore(room: Room, config: Config, locationMap: Locatio
           if (!transit) {
             await sleep();
             transit = await getTransit(currentValue as number[], value);
+            console.debug('获得了新的路线 ' + resblock_name + ': ', transit);
             Object.assign(locationToObj, {
               [toName]: transit,
             });
@@ -186,7 +188,7 @@ export async function calcScore(room: Room, config: Config, locationMap: Locatio
 
 export function deal(option: DealOption, cb: (done: boolean) => void) {
   const { urlWithParams, page, results, location } = option;
-  const timespan = randInt(6000, 30000);
+  const timespan = randInt(2000, 10000);
   console.log(`准备请求第${page}页数据，等待${timespan}ms...`);
   setTimeout(async () => {
     const data: ResponseData | null = await query(urlWithParams, page);
