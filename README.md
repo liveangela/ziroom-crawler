@@ -32,23 +32,27 @@
 - mod.ts      各类方法
 - refresh.ts  重新打分
 
-```js
+```shell
 // 开始爬取
 deno run --allow-read --allow-write --allow-net main.ts
+
 
 // 断点续传，先更改config.json中的source字段，例如
 "source": {
   "page": 66,
   "path": "./data_2021-07-05 10:57:16.json"
 }
-// 再次执行开始爬取，会另存为新的结果文件
+// 再次执行上面的开始爬取命令，会另存为新的结果文件
+
 
 // 重新打分
 deno run --allow-read --allow-write --allow-net refresh.ts
 ```
 
 ## 待改进
+
 [ ] 打分算法还不够理想，忽视了无电梯的房子，且排名考前的并不一定是最好的，仍需调参
+
 [ ] 同名小区会导致定位不正确，从而打分错误，应考虑地铁站这条线索
 
 ## 问题
