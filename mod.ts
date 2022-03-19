@@ -157,10 +157,11 @@ export async function calcScore(room: Room, config: Config, locationMap: Locatio
     const { factor, divider } = targetConfig[key] || {};
     let score = 1;
     switch (typeof value) {
-      case 'number':
+      case 'number': {
         const diff = Math.abs(currentValue as number - value);
         score = diff / (divider || 1) * (factor || 1);
         break;
+      }
       case 'boolean':
         score = value === currentValue ? 0 : 1;
         break;
@@ -181,7 +182,7 @@ export async function calcScore(room: Room, config: Config, locationMap: Locatio
           score = distance / (divider || 1) * (factor || 1);
         }
         break;
-      default:;
+      default:
     }
     target[key] = score;
     sum += score;
